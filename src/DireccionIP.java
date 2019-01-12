@@ -1,6 +1,5 @@
 public class DireccionIP {
     private int[] octetos = new int[4];
-    private char clase;
 
 
     DireccionIP(String direccionIP) {
@@ -19,20 +18,79 @@ public class DireccionIP {
         this.octetos = direccionIP;
     }
 
-    public char getClase() {
-        return clase;
+    private char clase(){
+        if(octetos[0]>=0 && octetos[0]<128){
+            return 'A';
+        }else if(octetos[0]<192){
+            return 'B';
+        }else if(octetos[0]<224){
+            return 'C';
+        }
+        return 'n';
     }
 
-    private char conseguirClase(DireccionIP direccionIP) {
-        char clase = 'A';
-        if (direccionIP.octetos[0]<128){
-            clase = 'A';
-        } else if (direccionIP.octetos[0]>=128 && direccionIP.octetos[0]<192){
-            clase='B';
-        }else if (direccionIP.octetos[0]>=192 && direccionIP.octetos[0]<224){
-            clase='C';
+
+    private String comprobarmascaraRed(){ ;
+        if(clase()=='A'){
+            return "255.0.0.0";
         }
-        return clase;
+        if(clase()=='B'){
+            return "255.255.0.0";
+        }
+        if(clase()=='C'){
+            return "255.255.255.0";
+        }
+        return "";
+    }
+
+    private String esPublica(){
+        if(clase() == 'A'){
+            if(octetos[0] < 11){
+                return "Es privada.";
+            }
+        }
+        if(clase() == 'B'){
+            if(octetos[0] == 172 && octetos[1] > 15 && octetos[1]<32){
+                return "Es privada";
+            }
+        }
+        if(clase() == 'C'){
+            if(octetos[0]==192 && octetos[1]==168){
+                return "Es privada";
+            }
+        }
+        return "Es pública";
+    }
+
+    private String direccionRed(){ ;
+        if(clase()=='A'){
+            return octetos[0]+".0.0.0";
+        }
+        if(clase()=='B'){
+            return octetos[0]+"."+octetos[1]+".0.0";
+        }
+        if(clase()=='C'){
+            return octetos[0]+"."+octetos[1]+"."+octetos[2]+".0";
+        }
+        return "";
+    }
+
+    private boolean esDireccionRed(int[] direccionIP){
+        if(direccionIP[3]==0){
+            return true;
+        }
+        return false;
+    }
+
+    public String infoIP(){
+        String salida="";
+        salida+="Dirección IP: "+toString()+"\n";
+        salida+="¿La IP es una dirección de red? "+ esDireccionRed(octetos)+"\n";
+        salida+="Dirección de red: "+direccionRed()+"\n";
+        salida+="Máscara de red: "+ comprobarmascaraRed()+"\n";
+        salida+="Clase tipo "+ clase();
+        salida+="\n"+esPublica();
+        return salida;
     }
 
     private int[] conseguirOctetos(String direccionIP) {
@@ -45,6 +103,10 @@ public class DireccionIP {
             }
         }
         return octetos;
+    }
+
+    public void setOctetos(int[] octetos) {
+        this.octetos = octetos;
     }
 
     @Override
