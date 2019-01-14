@@ -15,7 +15,5 @@ public class PruebaIP {
         System.out.println("");
         System.out.println(ip3.infoIP());
 
-
-
     }
 }
